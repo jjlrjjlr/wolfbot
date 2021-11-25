@@ -1,13 +1,10 @@
 import hikari
 import lightbulb
 from datetime import datetime
-import admin_check
 
 ping_plugin = lightbulb.Plugin('Ping')
-bot_ping = None
 
 @ping_plugin.command
-@lightbulb.add_checks(lightbulb.checks.has_roles(824206291194609675))
 @lightbulb.command('ping', 'Get WolfBots current latency.')
 @lightbulb.implements(lightbulb.commands.SlashCommand)
 async def ping(ctx: lightbulb.context.Context) -> None:

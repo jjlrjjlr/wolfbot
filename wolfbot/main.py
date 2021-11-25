@@ -14,7 +14,6 @@ def main():
 
     bot = lightbulb.BotApp(
         token=__token,
-        prefix='!',
         intents=hikari.Intents.ALL,
         ignore_bots=True,
         default_enabled_guilds=__guild
