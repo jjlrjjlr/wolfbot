@@ -16,5 +16,5 @@ async def cute_command(ctx: lightbulb.context.Context) -> None:
     )
     await ctx.respond(embed)
 
-def load(bot: lightbulb.BotApp):
+def load(bot: lightbulb.BotApp) -> None:
     bot.add_plugin(cute_plugin)

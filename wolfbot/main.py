@@ -4,7 +4,9 @@
 
 import hikari
 import lightbulb
-from os import name as os_name
+from os import name, path, makedirs
+from settings import Settings
+import pin_db
 
 def main():
     with open('.secret/token', 'r') as token_file:
@@ -19,11 +21,17 @@ def main():
         default_enabled_guilds=__guild
     )
 
+    bot.d.settings = Settings()
+
+    if not path.exists(bot.d.settings.get_save_database_file()):
+        makedirs(path.dirname(bot.d.settings.get_save_database_file()), exist_ok=True)
+        pin_db.create_database(bot)
+
     bot.load_extensions_from('./extensions/')
     bot.run()
 
 if __name__ == '__main__':
-    if os_name != 'nt':
+    if name != 'nt':
         import uvloop
         uvloop.install()
     main()
