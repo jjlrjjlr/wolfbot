@@ -6,17 +6,17 @@ import utils
 import pin_db
 from datetime import datetime
 
-reference_plugin = lightbulb.Plugin('Reference')
+pin_plugin = lightbulb.Plugin('Pin')
 
-@reference_plugin.command
-@lightbulb.command('reference', 'Test command to learn about referenced messages.')
+@pin_plugin.command
+@lightbulb.command('pin', 'Save a message to the pins channel and to the pins database.')
 @lightbulb.implements(lightbulb.commands.SlashCommand)
-async def reference_command(ctx: lightbulb.context.Context) -> None:
+async def pin_command(ctx: lightbulb.context.Context) -> None:
     embed = hikari.Embed(
         title='Save Message',
-        description='''Save a message to the pins channel by either responding
-            with an exclamation mark followed by the message id, or replying
-            directly to the message you want saved within the next 45 seconds.''',
+        description='''Save a message to the pins channel by
+            replying directly to the message you
+            want saved within the next 45 seconds.''',
         color=hikari.colors.Color(0xf5c71a)
     )
     await ctx.respond(embed=embed)
@@ -63,8 +63,40 @@ async def reference_command(ctx: lightbulb.context.Context) -> None:
         )
         await ctx.edit_last_response(embed=timeout_embed)
 
+# @pin_command.child
+# @lightbulb.option('channel', 'Id for the channel the message was sent in.', required=True)
+# @lightbulb.option('message', 'Message id', required=True)
+# @lightbulb.command('by_id', 'Pin message by id.')
+# @lightbulb.implements(lightbulb.commands.SlashSubCommand)
+# async def by_id(ctx: lightbulb.context.Context) -> None:
+#     message = ctx.bot.rest.fetch_message(ctx.options.channel, ctx.options.message)
+#     print(message)
+#     pin_db.save_to_database(ctx.bot, message)
+
+#     message_embed = hikari.Embed(
+#         title='Saved Message.',
+#         color=hikari.Color(0x0000b4),
+#         description=message.content
+#     ).set_author(
+#         name=message.author.username,
+#         icon=message.author.avatar_url.url
+#     ).add_field(
+#         name='Message ID',
+#         value=f'[{message.id}]({message.make_link(ctx.get_guild().id)})',
+#     ).set_footer(
+#         text=str(message.timestamp)
+#     )
+#     if len(message.attachments) > 0:
+#         message_embed.set_image(message.attachments[0].url)
+#         message_embed.add_field(
+#             name='Attachments',
+#             value='\n'.join(_format_attachment_urls(message.attachments))
+#         )   
+
+#     await ctx.bot.rest.create_message(824102922332930068, embed=message_embed)
+
 def load(bot: lightbulb.BotApp) -> None:
-    bot.add_plugin(reference_plugin)
+    bot.add_plugin(pin_plugin)
 
 def get_attachments(attachments: []) -> str:
     if len(attachments) > 0:
