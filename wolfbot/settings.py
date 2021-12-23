@@ -26,14 +26,14 @@ class Settings:
     def get_save_channel(self, guild_id: Union[str, int]) -> int:
         return self._settings[str(guild_id)].get('save_channel')
 
-    def set_save_channel(self, guild_id: Union[str, int], channel_id: Union[str, int]):
+    def set_save_channel(self, guild_id: str | int, channel_id: Union[str, int]):
         self.verify_guild_key(str(guild_id))
         self._settings[str(guild_id)]['save_channel'] = channel_id
         self.write_settings()
 
     def write_settings(self):
         with open('./settings.json', 'w') as settings_file:
-            settings_file.write(json.dumps(self._settings))
+            settings_file.write(json.dumps(self._settings, indent=4))
 
     def read_settings(self):
         with open('./settings.json', 'r') as settings_file:
