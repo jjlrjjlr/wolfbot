@@ -1,5 +1,9 @@
 #!/bin/python3
 # WolfBot
+# =======
+# Personal bot of jjlr (https://github.com/jjlrjjlr).
+#
+# AGPL-3.0-or-later
 # ------------
 
 import hikari
