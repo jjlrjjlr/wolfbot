@@ -64,7 +64,8 @@ async def pin_command(ctx: lightbulb.context.Context) -> None:
             try:
                 with ctx.bot.stream(hikari.events.MessageCreateEvent, timeout=45).filter(('author_id', ctx.author.id)) as stream:
                     event: hikari.events.MessageCreateEvent
-                    async for event in stream:
+                    stream: hikari.api.EventStream
+                    async for event in stream.limit(1):
                         if event.message.content == 'save':
                             pin_db.save_to_database(ctx.bot, event.message.referenced_message)
 
