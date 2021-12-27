@@ -3,6 +3,9 @@ from typing import Union
 from os import path
 
 class Settings:
+    '''
+        Settings handler, used to interact with the settings file and store all settings.
+    '''
     def __init__(self):
         self._settings = {
             'default': {
@@ -18,7 +21,7 @@ class Settings:
     def get_save_database_file(self, guild_id='default'):
         return self._settings[str(guild_id)].get('save_database', ''.join(['./db/', guild_id, '_messages.db']))
 
-    def set_save_database_file(self, guild_id: Union[str, int], save_file: str):
+    def set_save_database_file(self, guild_id: str | int, save_file: str):
         self.verify_guild_key(str(guild_id))
         self._settings[str(guild_id)]['save_database'] = save_file
         self.write_settings()

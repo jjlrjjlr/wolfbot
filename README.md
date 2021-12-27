@@ -1,6 +1,8 @@
 
-WolfBot
-=====
+<p align="center"><img src='./wolfbot_circle.png' width=250 height=250></p>
+
+# WolfBot
+
 Wolfbot is the personal bot of [jjlr](https://github.com/jjlrjjlr).
 
 Commands
