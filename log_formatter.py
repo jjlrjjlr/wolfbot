@@ -1,7 +1,7 @@
 #!/bin/python3
 # Log Formatter
 # =======
-# Custom log formatter for colored logging.
+# Custom log formatter for colored and markdown logging.
 #
 # Copyright 2021  jjlrjjlr (https://github.com/jjlrjjlr)
 
@@ -33,10 +33,10 @@ class ColoredFormatter(logging.Formatter):
     FMT = '({asctime}) {module} [{levelname:^9}]: {message}'
     FORMATS = {
         logging.DEBUG: f'\33[38;5;243m{FMT}\33[0m',
-        logging.INFO: f'\33[38;5;215m{FMT}\33[0m',
+        logging.INFO: f'\33[32;5;215m{FMT}\33[0m',
         logging.WARNING: f'\33[33;1m{FMT}\33[0m',
         logging.ERROR: f'\33[31;5m{FMT}\33[0m',
-        logging.CRITICAL: f'\33[31;3m{FMT}\33[0m'
+        logging.CRITICAL: f'\33[31;2m{FMT}\33[0m'
     }
     def format(self, record: logging.LogRecord) -> str:
         log_fmt = self.FORMATS.get(record.levelno)
@@ -51,7 +51,7 @@ class MarkdownFormatter(logging.Formatter):
     FMT = '({asctime}) {module} [{levelname:^9}]: {message}'
     FORMATS = {
         logging.DEBUG: f'<p style="color:grey">{FMT}</p>',
-        logging.INFO: f'<p style="color:orange">{FMT}</p>',
+        logging.INFO: f'<p style="color:green">{FMT}</p>',
         logging.WARNING: f'<p style="color:yellow">{FMT}</p>',
         logging.ERROR: f'<p style="color:red">{FMT}</p>',
         logging.CRITICAL: f'<p style="color:darkred">{FMT}</p>'
@@ -67,7 +67,7 @@ def color_handler() -> logging.StreamHandler:
     _handler.setFormatter(ColoredFormatter())
     return _handler
 
-def markdown_handler(filename: str=_TODAY, dir_path: str='.') -> logging.FileHandler:
+def markdown_handler(filename: str=f'{_TODAY}.md', dir_path: str='.') -> logging.FileHandler:
     makedirs(dir_path, exist_ok=True)
     _handler = logging.FileHandler('/'.join([dir_path, filename]))
     _handler.setFormatter(MarkdownFormatter())

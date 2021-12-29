@@ -6,12 +6,16 @@ import utils
 import pin_db
 from datetime import datetime
 import traceback
+import logging
+import log_formatter
+from sys import argv
+
+logging.getLogger()
 
 pin_plugin = lightbulb.Plugin('Pin')
 
 @pin_plugin.command
-@lightbulb.option('channel', 'ID of the channel the message to save is in. This must be used with the `Message` option.', required=False, type=int)
-@lightbulb.option('message', 'ID of the message to save. This must be used with the `Channel` option.', required=False, type=int)
+@lightbulb.option('message_url', 'URL of the message to save.', required=False, type=str)
 @lightbulb.command('pin', 'Save a message to the pins channel and to the pins database.')
 @lightbulb.implements(lightbulb.commands.SlashCommand)
 async def pin_command(ctx: lightbulb.context.Context) -> None:
@@ -24,9 +28,26 @@ async def pin_command(ctx: lightbulb.context.Context) -> None:
             )
         )
     else:
-        if ctx.options.channel is not None and ctx.options.message is not None:
+        if ctx.options.message_url is not None and ctx.options.message_url.startswith('https://'):
+            split_url = ctx.options.message_url.split('/')
+            _guild, _channel, _message = split_url[4:7]
+            logging.debug(f'\n\tURL: {ctx.options.message_url}\n\tChannel: {_channel}\n\tMessage: {_message}')
+
+            if int(_guild) != ctx.get_guild().id:
+                logging.warning(f'{ctx.author.username}:{ctx.author.id} attempted to save a message from {_guild} in {ctx.get_guild().id}.')
+                await ctx.respond(
+                    embed=hikari.Embed(
+                        title='Warning',
+                        description='Cross guild message saving is not supported,\
+                             if you wish to save a message please make sure to do so\
+                            from within the guild the message exists.',
+                        color=hikari.Color(0xffff00)
+                    )   
+                )
+                return
+            
             try:
-                message = await ctx.bot.rest.fetch_message(int(ctx.options.channel), int(ctx.options.message))
+                message = await ctx.bot.rest.fetch_message(int(_channel), int(_message))
                 
                 pin_db.save_to_database(ctx.bot, message)
 
@@ -42,8 +63,10 @@ async def pin_command(ctx: lightbulb.context.Context) -> None:
                         color=hikari.Color(0x66FF00)
                     )
                 )
+
+                logging.info(f'Message {_guild}:{_channel}:{_message} saved by user {ctx.author.username}:{ctx.author.discriminator}:{ctx.author.id}')
             except Exception as e:
-                print(traceback.format_exc())
+                logging.exception('Unknown exception when attempting to save message through "message_url" option.' )
                 await ctx.respond(
                     embed=hikari.Embed(
                         title='Error',
@@ -57,7 +80,8 @@ async def pin_command(ctx: lightbulb.context.Context) -> None:
                     title='Save Message',
                     description='''Save a message to the pins channel by
                         replying directly to the message you
-                        want saved within the next 45 seconds.''',
+                        want saved with the word "save" within the next 45
+                        seconds, or say "cancel" to cancel this request.''',
                     color=hikari.colors.Color(0xf5c71a)
                 )
             )
@@ -73,6 +97,8 @@ async def pin_command(ctx: lightbulb.context.Context) -> None:
                                 ctx.bot.d.settings.get_save_channel(ctx.guild_id.real),
                                 embed=build_message_embed(event.message.referenced_message, ctx.get_guild().id.real)
                             )
+
+                            logging.info(f'Message {ctx.get_guild().id}:{ctx.get_channel().id}:{event.message.referenced_message.id} saved by user {ctx.author.username}:{ctx.author.discriminator}:{ctx.author.id}')
 
                             await ctx.edit_last_response(
                                 embed=hikari.Embed(
