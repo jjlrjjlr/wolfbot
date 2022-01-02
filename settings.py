@@ -18,27 +18,27 @@ class Settings:
             self.write_settings()
         self.read_settings()
 
-    def get_save_database_file(self, guild_id='default'):
+    def get_save_database_file(self, guild_id: str='default') -> str:
         return self._settings[str(guild_id)].get('save_database', ''.join(['./db/', guild_id, '_messages.db']))
 
-    def set_save_database_file(self, guild_id: str | int, save_file: str):
+    def set_save_database_file(self, guild_id: str | int, save_file: str) -> None:
         self.verify_guild_key(str(guild_id))
         self._settings[str(guild_id)]['save_database'] = save_file
         self.write_settings()
 
-    def get_save_channel(self, guild_id: Union[str, int]) -> int:
+    def get_save_channel(self, guild_id: str | int) -> int:
         return int(self._settings[str(guild_id)].get('save_channel', -1))
 
-    def set_save_channel(self, guild_id: str | int, channel_id: Union[str, int]):
+    def set_save_channel(self, guild_id: str | int, channel_id: str | int) -> None:
         self.verify_guild_key(str(guild_id))
         self._settings[str(guild_id)]['save_channel'] = channel_id
         self.write_settings()
 
-    def write_settings(self):
+    def write_settings(self) -> None:
         with open('./settings.json', 'w') as settings_file:
             settings_file.write(json.dumps(self._settings, indent=4))
 
-    def read_settings(self):
+    def read_settings(self) -> None:
         with open('./settings.json', 'r') as settings_file:
             self._settings.update(json.load(settings_file))
     

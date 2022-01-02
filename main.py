@@ -3,7 +3,7 @@
 # =======
 # Personal bot of jjlr (https://github.com/jjlrjjlr).
 #
-# Copyright 2021  jjlrjjlr (https://github.com/jjlrjjlr)
+# Copyright 2021-2022  jjlrjjlr (https://github.com/jjlrjjlr)
 
 #   This program is free software: you can redistribute it and/or modify
 #   it under the terms of the GNU Affero General Public License as published
