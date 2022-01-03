@@ -17,7 +17,7 @@ async def restart(ctx: lightbulb.context.Context) -> None:
     await ctx.respond(
         embed=hikari.Embed(
             title='Restarting',
-            description=f'Restarting WolfBot down.',
+            description=f'Restarting WolfBot.',
             color=hikari.Color(0x660000),
         )
     )

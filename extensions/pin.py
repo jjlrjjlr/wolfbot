@@ -9,6 +9,7 @@ import traceback
 import logging
 import log_formatter
 from sys import argv
+import time
 
 logging.getLogger()
 
@@ -178,10 +179,12 @@ def build_message_embed(message: hikari.messages.Message, guild_id: int) -> hika
         name=message.author.username,
         icon=message.author.avatar_url.url
     ).add_field(
-        name='Message ID',
+        name='ID:',
         value=f'[{message.id}]({message.make_link(guild_id)})',
-    ).set_footer(
-        text=str(message.timestamp)
+    ).add_field(
+        name='Sent:',
+        value=f'<t:{int(time.mktime(message.timestamp.timetuple()))}>',
+        inline=True
     )
     if len(message.attachments) > 0:
         message_embed.set_image(message.attachments[0].url)

@@ -5,6 +5,7 @@ import hikari
 from datetime import datetime
 import utils
 import json
+import time
 
 def create_database(bot: lightbulb.BotApp):
     database = sqlite3.connect(bot.d.settings.get_save_database_file())
@@ -54,8 +55,8 @@ def save_to_database(
                 message.author.avatar_hash,
                 message.author.avatar_url.url,
                 utils.save_file('./avatars/', ''.join([str(message.author.id), '_', message.author.avatar_hash, '.', message.author.avatar_url.extension]), message.author.avatar_url),
-                message.timestamp,
-                datetime.now(),
+                time.mktime(message.timestamp.timetuple()),
+                time.mktime(datetime.now().timetuple()),
                 get_attachments(message.attachments),
                 get_attachment_urls(message.attachments)
             )
