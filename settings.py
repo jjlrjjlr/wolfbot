@@ -27,6 +27,7 @@ class Settings:
         self.write_settings()
 
     def get_save_channel(self, guild_id: str | int) -> int:
+        self.verify_guild_key(str(guild_id))
         return int(self._settings[str(guild_id)].get('save_channel', -1))
 
     def set_save_channel(self, guild_id: str | int, channel_id: str | int) -> None:
