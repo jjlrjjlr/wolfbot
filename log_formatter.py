@@ -32,10 +32,10 @@ class ColoredFormatter(logging.Formatter):
     '''
     FMT = '({asctime}) {module} [{levelname:^9}]: {message}'
     FORMATS = {
-        logging.DEBUG: f'\33[38;5;243m{FMT}\33[0m',
-        logging.INFO: f'\33[32;5;215m{FMT}\33[0m',
+        logging.DEBUG: f'\33[38;243m{FMT}\33[0m',
+        logging.INFO: f'\33[32;215m{FMT}\33[0m',
         logging.WARNING: f'\33[33;1m{FMT}\33[0m',
-        logging.ERROR: f'\33[31;5m{FMT}\33[0m',
+        logging.ERROR: f'\33[31m{FMT}\33[0m',
         logging.CRITICAL: f'\33[31;2m{FMT}\33[0m'
     }
     def format(self, record: logging.LogRecord) -> str:
