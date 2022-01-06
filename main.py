@@ -27,6 +27,8 @@ from settings import Settings
 import pin_db
 import log_formatter
 import logging
+import control_daemon
+import asyncio
 
 logging.basicConfig(
     level=logging.DEBUG if '--debug' in argv else logging.INFO,
@@ -56,7 +58,13 @@ def main():
         pin_db.create_database(bot)
 
     bot.load_extensions_from('./extensions/')
-    bot.run()
+    
+    loop = asyncio.new_event_loop()
+    loop.create_task(bot.start())
+    loop.create_task(control_daemon.CommandDaemon().cmdloop())
+    loop.run_forever()
+    
+
 
 if __name__ == '__main__':
     if name != 'nt':
