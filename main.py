@@ -59,7 +59,11 @@ def main():
 
     bot.load_extensions_from('./extensions/')
     
-    bot.run()
+    loop = asyncio.new_event_loop()
+    loop.create_task(bot.start())
+    loop.create_task(control_daemon.prompt(bot, loop))
+    loop.run_forever()
+    
 
 
 if __name__ == '__main__':

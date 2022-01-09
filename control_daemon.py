@@ -1,24 +1,63 @@
-import prompt_toolkit
-from prompt_toolkit import print_formatted_text, HTML, Application
-from prompt_toolkit.layout.containers import HSplit, Window
-from prompt_toolkit.layout.controls import FormattedTextControl
-from prompt_toolkit.layout.layout import Layout
-from prompt_toolkit.key_binding import KeyBindings, key_processor
-import logging, time
+from aioconsole import ainput
+import hikari
+import lightbulb
+import sys
+import asyncio
+import logging
 
-KEY_BINDINGS = KeyBindings()
+logging.getLogger()
 
-root_container = HSplit([
-    Window(content=FormattedTextControl(text='Test 1 2 3 4 5'))
-])
 
-@KEY_BINDINGS.add('c-q')
-def exit(event: key_processor.KeyPressEvent) -> None:
-    event.app.exit()
+class CommandRegistry:
+    _commands = {}
 
-def main() -> None:
-    wolfbot_app = Application(key_bindings=KEY_BINDINGS, full_screen=True, layout=Layout(root_container))
-    wolfbot_app.run()
+    @classmethod
+    def register(cls, *args):
+        def decorator(fn) -> 'function':
+            cls._commands[fn.__name__] = fn
+            return fn
+        return decorator
+
+    @classmethod
+    async def execute(cls, command, ctx) -> None:
+        if command in cls._commands:
+            await cls._commands[command](ctx)
+        else:
+            logging.warning(f'{command} is not a valid command. Please enter a valid command, or type "help" for a list of commands.')
+
+@CommandRegistry.register()
+async def exit(ctx: dict) -> None:
+    print(ctx)
+    await ctx['bot'].close()
+    asyncio.get_event_loop().stop()
+
+@CommandRegistry.register()
+async def help(ctx: dict) -> None:
+    pass
+
+async def prompt(bot: lightbulb.BotApp) -> None:
+    while True:
+        user_input = await ainput('> ')
+        if user_input not in [None, '']:
+            split_input = user_input.split()
+            print(user_input, '\n', split_input)
+            await CommandRegistry.execute(
+                split_input[0],
+                {
+                    'command': split_input[0],
+                    'args': split_input[1:],
+                    'raw_command': user_input,
+                    'bot': bot
+                }
+            )
+
+
+async def tests() -> None:
+    print(CommandRegistry._commands)
+    await prompt('test_bot')
 
 if __name__ == '__main__':
-    main()
+    import asyncio
+
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(tests())
