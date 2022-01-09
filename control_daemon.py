@@ -4,6 +4,7 @@ import lightbulb
 import sys
 import asyncio
 import logging
+import time
 
 logging.getLogger()
 
@@ -36,6 +37,7 @@ async def help(ctx: dict) -> None:
     pass
 
 async def prompt(bot: lightbulb.BotApp) -> None:
+    await asyncio.sleep(3)
     while True:
         user_input = await ainput('> ')
         if user_input not in [None, '']:
@@ -57,7 +59,4 @@ async def tests() -> None:
     await prompt('test_bot')
 
 if __name__ == '__main__':
-    import asyncio
-
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(tests())
+    print(CommandRegistry._commands)
