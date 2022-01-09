@@ -1,8 +1,10 @@
+import prompt_toolkit
 from prompt_toolkit import print_formatted_text, HTML, Application
 from prompt_toolkit.layout.containers import HSplit, Window
 from prompt_toolkit.layout.controls import FormattedTextControl
 from prompt_toolkit.layout.layout import Layout
-from prompt_toolkit.key_binding import KeyBindings
+from prompt_toolkit.key_binding import KeyBindings, key_processor
+import logging, time
 
 KEY_BINDINGS = KeyBindings()
 
@@ -11,8 +13,7 @@ root_container = HSplit([
 ])
 
 @KEY_BINDINGS.add('c-q')
-def exit(event) -> None:
-    (type(event))
+def exit(event: key_processor.KeyPressEvent) -> None:
     event.app.exit()
 
 def main() -> None:
